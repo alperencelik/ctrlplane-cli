@@ -35,13 +35,14 @@ func main() {
 		os.Exit(ee.ExitCode()) // kubectl said why
 	}
 	if err != nil {
+		fmt.Fprintln(os.Stderr, "Error:", err)
 		os.Exit(1)
 	}
 }
 
 func root() *cobra.Command {
 	var cp string
-	r := &cobra.Command{Use: "ctrlplane", Short: "Hosted Kubernetes control planes, from the terminal", SilenceUsage: true, Version: version}
+	r := &cobra.Command{Use: "ctrlplane", Short: "The CLI for ctrlplane.run: hosted Kubernetes control planes, from the terminal", SilenceUsage: true, SilenceErrors: true, Version: version}
 	if strings.HasPrefix(filepath.Base(os.Args[0]), "kubectl-") {
 		r.Annotations = map[string]string{cobra.CommandDisplayNameAnnotation: "kubectl ctrlplane"}
 	}
@@ -49,7 +50,7 @@ func root() *cobra.Command {
 	server := "https://app.ctrlplane.run"
 	loginCmd := &cobra.Command{Use: "login", Short: "Sign in with your browser", Args: cobra.NoArgs,
 		RunE: func(c *cobra.Command, _ []string) error { return login(c.Context(), server) }}
-	loginCmd.Flags().StringVar(&server, "server", server, "the platform's site")
+	loginCmd.Flags().StringVar(&server, "server", server, "the platform's site (self-hosted platforms aren't supported yet)")
 	wait, yes := false, false
 	createCmd := &cobra.Command{Use: "create <name>", Short: "Create a control plane (named <your name>-<name>)", Args: cobra.ExactArgs(1),
 		RunE: func(c *cobra.Command, args []string) error { return create(c.Context(), args[0], wait) }}
@@ -317,7 +318,7 @@ func kubectl(ctx context.Context, args []string) error {
 }
 
 // controllers lists the control plane's controller pods, from its API server's
-// /platform/controllers (cmd/tenant-apiserver/hostlogs.go).
+// /platform/controllers.
 func controllers(ctx context.Context, cp string) error {
 	kctx, err := kubeContext(ctx, cp)
 	if err != nil {

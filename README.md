@@ -1,6 +1,6 @@
 # ctrlplane CLI
 
-The command-line client for [ctrlplane](https://ctrlplane.run), hosted Kubernetes control planes
+The command-line client for [ctrlplane.run](https://ctrlplane.run), hosted Kubernetes control planes
 for operators.
 
 `ctrlplane` does what the site does, from your terminal: sign in, list, create and delete your
@@ -35,8 +35,9 @@ The commands that run `kubectl` need `kubectl` on your `PATH`. You don't need ku
 
 ```sh
 ctrlplane login                    # https://app.ctrlplane.run
-ctrlplane login --server https://app.example.com   # a self-hosted platform
 ```
+
+`--server` points it at another site, but self-hosted platforms aren't supported yet.
 
 Your browser opens to sign in with GitHub, as on the site. The CLI waits on port 8000 (or 18000
 if 8000 is busy) for the browser to come back. It stores the platform's URL and your tokens in

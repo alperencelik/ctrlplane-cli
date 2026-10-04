@@ -72,7 +72,10 @@ func (c *config) save() error {
 func login(ctx context.Context, server string) error {
 	c := &config{Server: strings.TrimRight(server, "/")}
 	// The platform says where to sign in (GET /login, as JSON).
-	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, c.Server+"/login", nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.Server+"/login", nil)
+	if err != nil {
+		return err
+	}
 	req.Header.Set("Accept", "application/json")
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {

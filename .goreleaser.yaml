@@ -23,7 +23,7 @@ changelog:
 homebrew_casks:
   - name: ctrlplane
     homepage: https://ctrlplane.run
-    description: CLI and kubectl plugin for ctrlplane, hosted Kubernetes control planes
+    description: CLI and kubectl plugin for ctrlplane.run, hosted Kubernetes control planes
     license: Apache-2.0
     repository:
       owner: alperencelik

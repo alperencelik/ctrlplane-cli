@@ -9,7 +9,7 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-// The site's kubeconfig (as cmd/platform's kubeconfig handler writes it) lands in KUBECONFIG as
+// The site's kubeconfig lands in KUBECONFIG as
 // ctrlplane-<name>, signing in through this CLI, next to what was there.
 func TestMergeKubeconfig(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "config")
