@@ -18,3 +18,26 @@ checksum:
   name_template: checksums.txt
 changelog:
   use: github
+# brew install alperencelik/tap/ctrlplane: the cask goes to alperencelik/homebrew-tap, pushed with
+# a deploy key that may write to that repo only (secret HOMEBREW_TAP_DEPLOY_KEY).
+homebrew_casks:
+  - name: ctrlplane
+    homepage: https://ctrlplane.run
+    description: CLI and kubectl plugin for ctrlplane, hosted Kubernetes control planes
+    license: Apache-2.0
+    repository:
+      owner: alperencelik
+      name: homebrew-tap
+      git:
+        url: git@github.com:alperencelik/homebrew-tap.git
+        private_key: "{{ .Env.HOMEBREW_TAP_DEPLOY_KEY }}"
+    commit_author:
+      name: goreleaserbot
+      email: bot@goreleaser.com
+    hooks:
+      post:
+        # The binaries aren't notarized: without this, macOS refuses to run a downloaded one.
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/ctrlplane"]
+          end

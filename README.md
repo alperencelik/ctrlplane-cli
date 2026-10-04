@@ -9,7 +9,13 @@ kubectl plugin: `kubectl ctrlplane list`.
 
 ## Install
 
-Download the archive for your system from the
+With Homebrew:
+
+```sh
+brew install alperencelik/tap/ctrlplane
+```
+
+Or download the archive for your system from the
 [latest release](https://github.com/alperencelik/ctrlplane-cli/releases/latest), unpack it and
 put `ctrlplane` on your `PATH`. Or, with Go 1.26 or later:
 
