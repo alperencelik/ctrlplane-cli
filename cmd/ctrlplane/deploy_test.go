@@ -10,18 +10,18 @@ import (
 func TestDeployForm(t *testing.T) {
 	f, err := deployForm("guestbook", []string{"--leader-elect", "--zap-devel"},
 		deployOpts{image: "ghcr.io/you/guestbook:v1", env: []string{"A=1", "B=x=y"}, cpu: "250m", webhookPort: 9443,
-			registryUser: "you", passwordStdin: true}, strings.NewReader("s3cret\n"))
+			metricsPort: "8443", metricsHTTPS: true, registryUser: "you", passwordStdin: true}, strings.NewReader("s3cret\n"))
 	if err != nil {
 		t.Fatal(err)
 	}
 	// As the site's form sends them: args and env one per line, the password without its newline.
 	for k, want := range map[string]string{"name": "guestbook", "image": "ghcr.io/you/guestbook:v1", "args": "--leader-elect\n--zap-devel",
-		"env": "A=1\nB=x=y", "cpu": "250m", "webhookPort": "9443", "registryUser": "you", "registryPassword": "s3cret"} {
+		"env": "A=1\nB=x=y", "cpu": "250m", "webhookPort": "9443", "metricsPort": "8443", "metricsHTTPS": "on", "registryUser": "you", "registryPassword": "s3cret"} {
 		if got := f.Get(k); got != want {
 			t.Errorf("%s = %q, want %q", k, got, want)
 		}
 	}
-	if f.Has("memory") || f.Has("source") {
+	if f.Has("memory") || f.Has("source") || f.Has("metricsPath") {
 		t.Errorf("unset fields sent: %v", f)
 	}
 

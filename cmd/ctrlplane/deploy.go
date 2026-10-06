@@ -19,9 +19,10 @@ import (
 
 type deployOpts struct {
 	image, file, cpu, memory, probes, registryUser string
+	metricsPort, metricsPath                       string
 	env                                            []string
 	webhookPort                                    int
-	passwordStdin                                  bool
+	passwordStdin, metricsHTTPS                    bool
 }
 
 func deployCmd(cp *string) *cobra.Command {
@@ -57,6 +58,9 @@ func deployCmd(cp *string) *cobra.Command {
 	f.StringVar(&o.memory, "memory", "", "memory limit, e.g. 128Mi")
 	f.IntVar(&o.webhookPort, "webhook-port", 0, "the port it serves admission or conversion webhooks on, e.g. 9443")
 	f.StringVar(&o.probes, "probes", "", "a file of Kubernetes probes: livenessProbe, readinessProbe, startupProbe")
+	f.StringVar(&o.metricsPort, "metrics-port", "", "where it serves Prometheus metrics (default 8080; 0: none)")
+	f.StringVar(&o.metricsPath, "metrics-path", "", "the metrics path (default /metrics)")
+	f.BoolVar(&o.metricsHTTPS, "metrics-https", false, "metrics over HTTPS with controller-runtime's authentication (kubebuilder's --metrics-secure)")
 	f.StringVar(&o.registryUser, "registry-user", "", "the username for a private image's registry")
 	f.BoolVar(&o.passwordStdin, "registry-password-stdin", false, "read the registry password or token from stdin")
 	return c
@@ -98,6 +102,11 @@ func deployForm(name string, args []string, o deployOpts, stdin io.Reader) (url.
 	set("env", strings.Join(o.env, "\n"))
 	set("cpu", o.cpu)
 	set("memory", o.memory)
+	set("metricsPort", o.metricsPort)
+	set("metricsPath", o.metricsPath)
+	if o.metricsHTTPS {
+		form.Set("metricsHTTPS", "on")
+	}
 	if o.webhookPort != 0 {
 		form.Set("webhookPort", strconv.Itoa(o.webhookPort))
 	}
