@@ -75,6 +75,7 @@ func root() *cobra.Command {
 			RunE: func(c *cobra.Command, args []string) error { return printKubeconfig(c.Context(), args[0]) }},
 		&cobra.Command{Use: "controllers", Short: "List the current control plane's controllers", Args: cobra.NoArgs,
 			RunE: func(c *cobra.Command, _ []string) error { return controllers(c.Context(), cp) }},
+		deployCmd(&cp), rmCmd(&cp), restartCmd(&cp), logsCmd(&cp),
 		passthrough("apply -f <file|dir|->", "kubectl apply, on the current control plane", func(a []string) []string { return append([]string{"apply"}, a...) }),
 		passthrough("get apis | get <resource...>", "kubectl get; `get apis` lists your CRDs", func(a []string) []string {
 			if len(a) > 0 && a[0] == "apis" {
@@ -341,7 +342,7 @@ func controllers(ctx context.Context, cp string) error {
 		return err
 	}
 	if len(pods) == 0 {
-		fmt.Fprintln(os.Stderr, "No controllers running. Deploy one on the site.")
+		fmt.Fprintln(os.Stderr, "No controllers running. Deploy one: ctrlplane deploy <name> --image <image>, or -f deployment.yaml")
 		return nil
 	}
 	tw := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)

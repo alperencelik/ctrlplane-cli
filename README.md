@@ -80,6 +80,25 @@ ctrlplane kubectl -- auth whoami   # any other kubectl command
 ctrlplane get apis --cp staging    # another control plane, without switching to it
 ```
 
+## Controllers
+
+Deploy, update and remove the controllers of the current control plane (or `--cp <name>`), as
+the site's Controllers page does:
+
+```sh
+ctrlplane deploy guestbook --image ghcr.io/you/guestbook:v1 \
+  --env LOG_LEVEL=debug --memory 128Mi --webhook-port 9443 -- --leader-elect
+ctrlplane deploy -f config/manager/manager.yaml   # or an install.yaml, or an https:// URL
+ctrlplane controllers                             # ready, restarts, last exit
+ctrlplane logs guestbook -f                       # --previous: the run before the last restart
+ctrlplane restart guestbook
+ctrlplane rm guestbook
+```
+
+`deploy` sends what the site's form sends; deploying a name again updates it. With `-f` the
+image, args, env, CPU and memory limits, probes and webhook port come from your operator's
+Deployment (its `manager` container); flags given as well win, and the CLI says what it didn't
+use. For a private image, pipe the token in: `--registry-user you --registry-password-stdin`.
 ## Build
 
 ```sh
