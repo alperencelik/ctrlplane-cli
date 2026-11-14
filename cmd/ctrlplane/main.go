@@ -75,7 +75,7 @@ func root() *cobra.Command {
 			RunE: func(c *cobra.Command, args []string) error { return printKubeconfig(c.Context(), args[0]) }},
 		&cobra.Command{Use: "controllers", Short: "List the current control plane's controllers", Args: cobra.NoArgs,
 			RunE: func(c *cobra.Command, _ []string) error { return controllers(c.Context(), cp) }},
-		deployCmd(&cp), rmCmd(&cp), restartCmd(&cp), logsCmd(&cp),
+		deployCmd(&cp), rmCmd(&cp), restartCmd(&cp), logsCmd(&cp), pluginCmd(&cp),
 		passthrough("apply -f <file|dir|->", "kubectl apply, on the current control plane", func(a []string) []string { return append([]string{"apply"}, a...) }),
 		passthrough("get apis | get <resource...>", "kubectl get; `get apis` lists your CRDs", func(a []string) []string {
 			if len(a) > 0 && a[0] == "apis" {

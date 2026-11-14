@@ -99,6 +99,20 @@ ctrlplane rm guestbook
 image, args, env, CPU and memory limits, probes and webhook port come from your operator's
 Deployment (its `manager` container); flags given as well win, and the CLI says what it didn't
 use. For a private image, pipe the token in: `--registry-user you --registry-password-stdin`.
+## Plugins
+
+Plugins are operators that the platform runs for you, for example a Crossplane provider. Turn one
+on for the current control plane (or `--cp <name>`), as on the site's Plugins page:
+
+```sh
+ctrlplane plugins                       # all plugins, and which are on
+ctrlplane plugin on crossplane-aws-s3   # its API types appear; the API server restarts for a few seconds
+ctrlplane plugin off crossplane-aws-s3  # refused while its resources exist
+```
+
+If the platform refuses, the CLI shows the reason. Each plugin's API types and an example are on
+the site's plugin catalog: `https://app.ctrlplane.run/plugins`.
+
 ## Build
 
 ```sh
